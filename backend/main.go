@@ -36,7 +36,7 @@ func calculate(first float64, operation string, second float64) (float64, error)
 
 	if operation == "/" {
 		if second == 0 {
-			return 0, fmt.Errorf("cannot divide by zero")
+			return 0, fmt.Errorf("Cannot divide by zero.")
 		}
 
 		return first / second, nil
@@ -44,6 +44,18 @@ func calculate(first float64, operation string, second float64) (float64, error)
 
 	if operation == "^" {
 		return math.Pow(first, second), nil
+	}
+
+	if operation == "sqrt" {
+		if first < 0 {
+			return 0, fmt.Errorf("Cannot calculate square root of a negative number.")
+		}
+
+		return math.Sqrt(first), nil
+	}
+
+	if operation == "%" {
+		return first * second / 100, nil
 	}
 
 	return 0, fmt.Errorf("invalid operation")

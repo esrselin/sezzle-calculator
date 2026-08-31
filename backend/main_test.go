@@ -52,6 +52,21 @@ func TestCalculate(t *testing.T) {
 			expected:  8,
 		},
 		{
+			name:      "square root",
+			first:     25,
+			operation: "sqrt",
+			second:    0,
+			expected:  5,
+		},
+		{
+			name:      "square root of negative number",
+			first:     -25,
+			operation: "sqrt",
+			second:    0,
+			expected:  0,
+			wantError: true,
+		},
+		{
 			name:      "division by zero",
 			first:     10,
 			operation: "/",
@@ -74,12 +89,19 @@ func TestCalculate(t *testing.T) {
 			expected:  10,
 		},
 		{
-			name:      "invalid operation",
-			first:     10,
-			operation: "%",
-			second:    5,
-			expected:  0,
-			wantError: true,
+		name:      "invalid operation",
+		first:     10,
+		operation: "invalid",
+		second:    5,
+		expected:  0,
+		wantError: true,
+		},
+		{
+		name:      "percentage",
+		first:     50,
+		operation: "%",
+		second:    10,
+		expected:  5,
 		},
 	}
 
@@ -141,6 +163,7 @@ func TestCalculator(t *testing.T) {
 		)
 	}
 }
+
 func TestCalculatorDivisionByZero(t *testing.T) {
 	requestBody := `{
 		"firstNumber": 10,
@@ -162,7 +185,7 @@ func TestCalculatorDivisionByZero(t *testing.T) {
 		t.Fatalf("expected status 400, got %d", response.Code)
 	}
 
-	expected := `{"error":"cannot divide by zero"}`
+	expected := `{"error":"Cannot divide by zero."}`
 
 	if strings.TrimSpace(response.Body.String()) != expected {
 		t.Errorf(
@@ -172,6 +195,7 @@ func TestCalculatorDivisionByZero(t *testing.T) {
 		)
 	}
 }
+
 func TestCalculatorInvalidJSON(t *testing.T) {
 	requestBody := `{
 		"firstNumber": 10,
@@ -202,10 +226,11 @@ func TestCalculatorInvalidJSON(t *testing.T) {
 		)
 	}
 }
+
 func TestCalculatorInvalidOperation(t *testing.T) {
 	requestBody := `{
 		"firstNumber": 10,
-		"operation": "%",
+		"operation": "invalid",
 		"secondNumber": 5
 	}`
 
@@ -233,6 +258,7 @@ func TestCalculatorInvalidOperation(t *testing.T) {
 		)
 	}
 }
+
 func TestCalculatorMethodNotAllowed(t *testing.T) {
 	request := httptest.NewRequest(
 		http.MethodGet,
@@ -258,6 +284,7 @@ func TestCalculatorMethodNotAllowed(t *testing.T) {
 		)
 	}
 }
+
 func TestCalculatorOptions(t *testing.T) {
 	request := httptest.NewRequest(
 		http.MethodOptions,
@@ -283,5 +310,36 @@ func TestCalculatorOptions(t *testing.T) {
 
 	if response.Header().Get("Access-Control-Allow-Headers") != "Content-Type" {
 		t.Errorf("unexpected Access-Control-Allow-Headers header")
+	}
+}
+func TestCalculatorSquareRoot(t *testing.T) {
+	requestBody := `{
+		"firstNumber": 25,
+		"operation": "sqrt",
+		"secondNumber": 0
+	}`
+
+	request := httptest.NewRequest(
+		http.MethodPost,
+		"/calculate",
+		strings.NewReader(requestBody),
+	)
+
+	response := httptest.NewRecorder()
+
+	calculator(response, request)
+
+	if response.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d", response.Code)
+	}
+
+	expected := `{"result":5}`
+
+	if strings.TrimSpace(response.Body.String()) != expected {
+		t.Errorf(
+			"expected %s, got %s",
+			expected,
+			strings.TrimSpace(response.Body.String()),
+		)
 	}
 }
