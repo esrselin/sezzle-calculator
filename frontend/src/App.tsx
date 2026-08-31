@@ -6,10 +6,23 @@ function App() {
   const [secondNumber, setSecondNumber] = useState('')
   const [operation, setOperation] = useState('+')
   const [result, setResult] = useState('')
+  const [error, setError] = useState('')
 
   const handleCalculate = async () => {
+    setError('')
+
+    if (firstNumber.trim() === '' || secondNumber.trim() === '') {
+      setError('Please enter both numbers.')
+      return
+    }
+
     const first = Number(firstNumber)
     const second = Number(secondNumber)
+
+    if (!Number.isFinite(first) || !Number.isFinite(second)) {
+      setError('Please enter valid numbers.')
+      return
+    }
 
     const response = await fetch('http://localhost:8080/calculate', {
       method: 'POST',
@@ -25,11 +38,23 @@ function App() {
 
     const data = await response.json()
 
+    if (!response.ok) {
+      setError(data.error)
+      setResult('')
+      return
+    }
+
     setResult(String(data.result))
   }
 
   return (
     <main className="calculator">
+      {error && (
+        <div className="error-popup">
+          {error}
+        </div>
+      )}
+
       <h1>Calculator</h1>
 
       <div className="display">

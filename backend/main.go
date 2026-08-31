@@ -57,7 +57,7 @@ func calculator(w http.ResponseWriter, r *http.Request) {
 
 	} else if request.Operation == "/" {
 		if request.SecondNumber == 0 {
-			writeError(w, "Cannot divide by zero", http.StatusBadRequest)
+			writeError(w, "Cannot divide by zero.", http.StatusBadRequest)
 			return
 		}
 

@@ -51,3 +51,13 @@
 .calculator-body button:hover {
   background-color: #04530a;
 }
+
+.error-popup {
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border: 1px solid #c62828;
+  border-radius: 8px;
+  background: #ffebee;
+  color: #c62828;
+  text-align: center;
+}
