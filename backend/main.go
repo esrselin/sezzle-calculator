@@ -21,6 +21,34 @@ type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
+func calculate(first float64, operation string, second float64) (float64, error) {
+	if operation == "+" {
+		return first + second, nil
+	}
+
+	if operation == "-" {
+		return first - second, nil
+	}
+
+	if operation == "*" {
+		return first * second, nil
+	}
+
+	if operation == "/" {
+		if second == 0 {
+			return 0, fmt.Errorf("cannot divide by zero")
+		}
+
+		return first / second, nil
+	}
+
+	if operation == "^" {
+		return math.Pow(first, second), nil
+	}
+
+	return 0, fmt.Errorf("invalid operation")
+}
+
 func calculator(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
@@ -44,30 +72,14 @@ func calculator(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var result float64
+	result, err := calculate(
+		request.FirstNumber,
+		request.Operation,
+		request.SecondNumber,
+	)
 
-	if request.Operation == "+" {
-		result = request.FirstNumber + request.SecondNumber
-
-	} else if request.Operation == "-" {
-		result = request.FirstNumber - request.SecondNumber
-
-	} else if request.Operation == "*" {
-		result = request.FirstNumber * request.SecondNumber
-
-	} else if request.Operation == "/" {
-		if request.SecondNumber == 0 {
-			writeError(w, "Cannot divide by zero.", http.StatusBadRequest)
-			return
-		}
-
-		result = request.FirstNumber / request.SecondNumber
-
-	} else if request.Operation == "^" {
-		result = math.Pow(request.FirstNumber, request.SecondNumber)
-
-	} else {
-		writeError(w, "Bad Request", http.StatusBadRequest)
+	if err != nil {
+		writeError(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
