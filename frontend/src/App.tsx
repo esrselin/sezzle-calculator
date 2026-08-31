@@ -11,10 +11,18 @@ function App() {
   const handleCalculate = async () => {
     setError('')
 
-    if (firstNumber.trim() === '' || secondNumber.trim() === '') {
-      setError('Please enter both numbers.')
-      return
-    }
+    const firstEmpty = firstNumber.trim() === ''
+const secondEmpty = secondNumber.trim() === ''
+
+if (firstEmpty) {
+  setError('Please enter a number.')
+  return
+}
+
+if (operation !== 'sqrt' && secondEmpty) {
+  setError('Please enter both numbers.')
+  return
+}
 
     const first = Number(firstNumber)
     const second = Number(secondNumber)
@@ -78,14 +86,18 @@ function App() {
           <option value="*">Multiplication (×)</option>
           <option value="/">Division (÷)</option>
           <option value="^">Exponentiation (^)</option>
+          <option value="sqrt">Square Root (√)</option>
+          <option value="%">Percentage (%)</option>
         </select>
 
+        {operation !== 'sqrt' && (
         <input
           type="number"
           placeholder="Second number"
           value={secondNumber}
           onChange={(event) => setSecondNumber(event.target.value)}
         />
+        )}
 
         <button
           type="button"

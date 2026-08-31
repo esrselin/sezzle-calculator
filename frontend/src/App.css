@@ -1,22 +1,35 @@
 .calculator {
   width: min(90%, 420px);
   margin: 80px auto;
-  color: #1B5E20;
+  padding: 32px;
+  color: #1b5e20;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(27, 94, 32, 0.08);
 }
 
 .calculator h1 {
+  margin: 0;
   text-align: center;
+  font-size: 2rem;
 }
 
 .display {
   min-height: 80px;
   margin: 24px 0;
   padding: 20px;
-  border: 2px solid #66BB6A;
-  border-radius: 8px;
+  border: 2px solid #81c784;
+  border-radius: 10px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   text-align: right;
   font-size: 2rem;
-  background: #E8F5E9;
+  font-weight: 600;
+  background: #f1f8f2;
+  overflow-wrap: anywhere;
 }
 
 .calculator-body {
@@ -28,36 +41,78 @@
 .calculator-body input,
 .calculator-body select,
 .calculator-body button {
-  padding: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 14px;
   font-size: 1rem;
-  border: 2px solid #66BB6A;
-  border-radius: 8px;
+  border: 2px solid #81c784;
+  border-radius: 10px;
   font-family: monospace;
 }
 
 .calculator-body input,
 .calculator-body select {
-  background: #d8fcd9;
-  color: #438d48;
+  background: #f7fbf7;
+  color: #2e6b32;
+  outline: none;
+}
+
+.calculator-body input:focus,
+.calculator-body select:focus {
+  border-color: #388e3c;
 }
 
 .calculator-body button {
+  margin-top: 4px;
+  border-color: #388e3c;
   cursor: pointer;
-  font-size: 1.5rem;
-  color: #E8F5E9;
-  background-color: #66BB6A;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #388e3c;
+  transition: background-color 0.2s ease;
 }
 
 .calculator-body button:hover {
-  background-color: #04530a;
+  background-color: #2e7d32;
 }
 
 .error-popup {
   padding: 12px 16px;
   margin-bottom: 16px;
-  border: 1px solid #c62828;
-  border-radius: 8px;
+  border: 1px solid #ef9a9a;
+  border-radius: 10px;
   background: #ffebee;
   color: #c62828;
   text-align: center;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 480px) {
+  .calculator {
+    width: 90%;
+    margin: 40px auto;
+    padding: 24px;
+  }
+
+  .calculator h1 {
+    font-size: 1.8rem;
+  }
+
+  .display {
+    min-height: 64px;
+    margin: 20px 0;
+    padding: 16px;
+    font-size: 1.6rem;
+  }
+
+  .calculator-body {
+    gap: 10px;
+  }
+
+  .calculator-body input,
+  .calculator-body select,
+  .calculator-body button {
+    padding: 11px 12px;
+  }
 }
