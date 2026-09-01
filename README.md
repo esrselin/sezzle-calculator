@@ -1,4 +1,3 @@
-````md
 # Sezzle Calculator
 
 A full-stack calculator application built with React and TypeScript on the frontend and Go on the backend.
@@ -18,8 +17,10 @@ The frontend communicates with the backend through a REST API to perform arithme
 - Error handling
 - Division by zero handling
 - Invalid operation handling
+- Backend connection error handling
 - Responsive design
 - Unit tests for frontend and backend
+- Docker support
 
 ## Tech Stack
 
@@ -37,6 +38,11 @@ The frontend communicates with the backend through a REST API to perform arithme
 - Go standard library
 - REST API
 
+### Development Tools
+
+- Docker
+- Docker Compose
+
 ## Project Structure
 
 ```text
@@ -44,8 +50,8 @@ sezzle-calculator/
 ├── backend/
 │   ├── main.go
 │   ├── main_test.go
-│   └── go.mod
-│
+│   ├── go.mod
+│   └── Dockerfile
 ├── frontend/
 │   ├── src/
 │   │   ├── App.tsx
@@ -54,55 +60,51 @@ sezzle-calculator/
 │   │   └── test/
 │   │       └── setup.ts
 │   ├── package.json
-│   └── vite.config.ts
-│
+│   ├── package-lock.json
+│   ├── vite.config.ts
+│   └── Dockerfile
+├── .dockerignore
 ├── .gitignore
+├── docker-compose.yml
 ├── AI_USAGE.md
 └── README.md
 ```
-````
 
 ## Getting Started
 
 ### Prerequisites
 
-Make sure the following are installed:
+For local development:
 
 - Go
 - Node.js
 - npm
 
-### Clone the Repository
+For Docker:
 
-```bash
-git clone https://github.com/esrselin/sezzle-calculator.git
-cd sezzle-calculator
-```
+- Docker Desktop
+- Docker Compose
 
-## Running the Backend
+## Running Locally
 
-Open a terminal in the `backend` directory:
+### Backend
 
 ```bash
 cd backend
 go run main.go
 ```
 
-The backend starts on:
+The backend starts on `http://localhost:8080`.
 
-```text
-http://localhost:8080
-```
-
-The calculator API endpoint is:
+API endpoint:
 
 ```text
 POST /calculate
 ```
 
-## Running the Frontend
+### Frontend
 
-Open another terminal in the `frontend` directory:
+Open another terminal:
 
 ```bash
 cd frontend
@@ -110,13 +112,26 @@ npm install
 npm run dev
 ```
 
-The frontend is available at:
+The frontend is available at `http://localhost:5173`.
 
-```text
-http://localhost:5173
+## Running with Docker
+
+From the project root:
+
+```bash
+docker compose up --build
 ```
 
-The frontend communicates with the backend running on port `8080`.
+This starts both services:
+
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:8080`
+
+Stop the containers with:
+
+```bash
+docker compose down
+```
 
 ## API Usage
 
@@ -124,9 +139,7 @@ The frontend communicates with the backend running on port `8080`.
 
 The API accepts two numbers and an operation.
 
-### Addition
-
-Request:
+Example:
 
 ```json
 {
@@ -156,23 +169,19 @@ Response:
 | `sqrt`    | Square root    | `√25 = 5`     |
 | `%`       | Percentage     | `50 % 10 = 5` |
 
-For percentage, the calculation is:
+Percentage is calculated as:
 
 ```text
 firstNumber × secondNumber / 100
 ```
 
-For example:
-
-```text
-50 % 10 = 50 × 10 / 100 = 5
-```
-
 For square root, only the first number is used.
 
-### Error Responses
+For exponentiation, the first number is raised to the power of the second number.
 
-Division by zero:
+## Error Responses
+
+### Division by zero
 
 ```json
 {
@@ -180,7 +189,7 @@ Division by zero:
 }
 ```
 
-Invalid operation:
+### Invalid operation
 
 ```json
 {
@@ -188,7 +197,7 @@ Invalid operation:
 }
 ```
 
-Invalid request body:
+### Invalid request body
 
 ```json
 {
@@ -196,7 +205,7 @@ Invalid request body:
 }
 ```
 
-Square root of a negative number:
+### Square root of a negative number
 
 ```json
 {
@@ -219,26 +228,28 @@ The application handles:
 
 The backend returns JSON error responses with appropriate HTTP status codes.
 
+The frontend validates required input before making an API request and displays backend or connection errors to the user.
+
 ## Testing
 
 ### Backend
 
-Run the backend tests:
+Run tests:
 
 ```bash
 cd backend
 go test -v
 ```
 
-Run backend coverage:
+Run coverage:
 
 ```bash
 go test -cover
 ```
 
-The current backend coverage is approximately 77%.
+Current backend coverage is approximately 77%.
 
-The backend tests cover:
+Backend tests cover:
 
 - Basic arithmetic operations
 - Exponentiation
@@ -254,20 +265,20 @@ The backend tests cover:
 
 ### Frontend
 
-Run the frontend tests:
+Run tests:
 
 ```bash
 cd frontend
 npm test -- --run
 ```
 
-Run frontend tests with coverage:
+Run coverage:
 
 ```bash
 npm test -- --run --coverage
 ```
 
-The frontend tests cover:
+Frontend tests cover:
 
 - Calculator rendering
 - Successful calculations
@@ -275,11 +286,10 @@ The frontend tests cover:
 - API error handling
 - Square root
 - Percentage
-- Exponentiation
+
+The current frontend test suite contains 6 tests.
 
 ## Production Build
-
-To create a production build:
 
 ```bash
 cd frontend
@@ -292,9 +302,9 @@ The project builds successfully with TypeScript and Vite.
 
 ### Separate Frontend and Backend
 
-The frontend handles user interaction and input validation, while the backend handles the calculation logic.
+The frontend handles user interaction and input validation, while the backend handles calculation logic.
 
-This keeps the calculation logic independent from the UI and allows the API to be used separately from the frontend.
+This keeps the calculation logic independent from the UI and allows the API to be used separately.
 
 ### Centralized Calculation Logic
 
@@ -307,17 +317,23 @@ The HTTP handler is responsible for:
 3. Calling the calculation function
 4. Returning a JSON response
 
-This keeps HTTP handling separate from the calculation logic and makes the core functionality easier to test.
+This keeps HTTP handling separate from calculation logic and makes the core functionality easier to test.
 
 ### Error Handling
 
 Calculation errors are returned from the calculation layer and converted into JSON API responses by the HTTP handler.
 
-The frontend also handles validation errors and backend connection errors so that failures are displayed to the user.
+The frontend also handles validation errors and backend connection errors.
 
 ### Responsive UI
 
-The calculator uses responsive CSS to remain usable on smaller screens while keeping the interface simple.
+Responsive CSS keeps the calculator usable on smaller screens while keeping the interface simple.
+
+### Docker
+
+The frontend and backend are containerized separately and orchestrated with Docker Compose.
+
+This keeps the services isolated while providing a simple way to run the complete application with one command.
 
 ## Assumptions
 
@@ -327,14 +343,10 @@ The calculator uses responsive CSS to remain usable on smaller screens while kee
 - Floating-point numbers are used to support decimal calculations.
 - The backend runs on port `8080`.
 - The frontend development server runs on port `5173`.
-- The frontend currently connects to the backend using `http://localhost:8080`.
+- The frontend connects to the backend using `http://localhost:8080`.
 
 ## AI Usage
 
 AI tools were used as a development assistant for debugging, test design, code review, and documentation.
 
 The prompts used during development are documented separately in [AI_USAGE.md](AI_USAGE.md).
-
-```
-
-```
