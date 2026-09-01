@@ -12,17 +12,17 @@ function App() {
     setError('')
 
     const firstEmpty = firstNumber.trim() === ''
-const secondEmpty = secondNumber.trim() === ''
+    const secondEmpty = secondNumber.trim() === ''
 
-if (firstEmpty) {
-  setError('Please enter a number.')
-  return
-}
+    if (firstEmpty) {
+      setError('Please enter a number.')
+      return
+    }
 
-if (operation !== 'sqrt' && secondEmpty) {
-  setError('Please enter both numbers.')
-  return
-}
+    if (operation !== 'sqrt' && secondEmpty) {
+      setError('Please enter both numbers.')
+      return
+    }
 
     const first = Number(firstNumber)
     const second = Number(secondNumber)
@@ -32,27 +32,32 @@ if (operation !== 'sqrt' && secondEmpty) {
       return
     }
 
-    const response = await fetch('http://localhost:8080/calculate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        firstNumber: first,
-        operation: operation,
-        secondNumber: second,
-      }),
-    })
+    try {
+      const response = await fetch('http://localhost:8080/calculate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstNumber: first,
+          operation: operation,
+          secondNumber: second,
+        }),
+      })
 
-    const data = await response.json()
+      const data = await response.json()
 
-    if (!response.ok) {
-      setError(data.error)
+      if (!response.ok) {
+        setError(data.error)
+        setResult('')
+        return
+      }
+
+      setResult(String(data.result))
+    } catch {
+      setError('Unable to connect to the server.')
       setResult('')
-      return
     }
-
-    setResult(String(data.result))
   }
 
   return (
@@ -91,12 +96,12 @@ if (operation !== 'sqrt' && secondEmpty) {
         </select>
 
         {operation !== 'sqrt' && (
-        <input
-          type="number"
-          placeholder="Second number"
-          value={secondNumber}
-          onChange={(event) => setSecondNumber(event.target.value)}
-        />
+          <input
+            type="number"
+            placeholder="Second number"
+            value={secondNumber}
+            onChange={(event) => setSecondNumber(event.target.value)}
+          />
         )}
 
         <button

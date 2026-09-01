@@ -18,7 +18,7 @@ The frontend communicates with the backend through a REST API to perform arithme
 - Error handling
 - Division by zero handling
 - Invalid operation handling
-- Responsive design for smaller screens
+- Responsive design
 - Unit tests for frontend and backend
 
 ## Tech Stack
@@ -56,6 +56,8 @@ sezzle-calculator/
 │   ├── package.json
 │   └── vite.config.ts
 │
+├── .gitignore
+├── AI_USAGE.md
 └── README.md
 ```
 ````
@@ -166,6 +168,8 @@ For example:
 50 % 10 = 50 × 10 / 100 = 5
 ```
 
+For square root, only the first number is used.
+
 ### Error Responses
 
 Division by zero:
@@ -202,41 +206,65 @@ Square root of a negative number:
 
 ## Validation and Error Handling
 
-The application handles several invalid input cases:
+The application handles:
 
-- Missing numbers in the frontend
+- Missing numbers
+- Invalid numeric input
 - Invalid JSON request bodies
 - Division by zero
 - Square root of negative numbers
 - Unsupported operations
 - Unsupported HTTP methods
+- Backend connection errors
 
-The backend returns appropriate HTTP status codes and JSON error responses.
+The backend returns JSON error responses with appropriate HTTP status codes.
 
 ## Testing
 
 ### Backend
 
-Run backend tests:
+Run the backend tests:
 
 ```bash
 cd backend
 go test -v
 ```
 
-Current backend test coverage:
+Run backend coverage:
 
-```text
-77.3%
+```bash
+go test -cover
 ```
+
+The current backend coverage is approximately 77%.
+
+The backend tests cover:
+
+- Basic arithmetic operations
+- Exponentiation
+- Square root
+- Percentage
+- Negative numbers
+- Decimal numbers
+- Division by zero
+- Invalid operations
+- Invalid JSON
+- Unsupported HTTP methods
+- CORS preflight requests
 
 ### Frontend
 
-Run frontend tests:
+Run the frontend tests:
 
 ```bash
 cd frontend
 npm test -- --run
+```
+
+Run frontend tests with coverage:
+
+```bash
+npm test -- --run --coverage
 ```
 
 The frontend tests cover:
@@ -247,37 +275,26 @@ The frontend tests cover:
 - API error handling
 - Square root
 - Percentage
-
-Run frontend tests with coverage:
-
-```bash
-npm test -- --run --coverage
-```
-
-Current frontend coverage:
-
-```text
-87.09%
-```
+- Exponentiation
 
 ## Production Build
 
-To verify the frontend production build:
+To create a production build:
 
 ```bash
 cd frontend
 npm run build
 ```
 
-The project currently builds successfully with TypeScript and Vite.
+The project builds successfully with TypeScript and Vite.
 
 ## Design Decisions
 
 ### Separate Frontend and Backend
 
-The frontend is responsible for user interaction and input validation, while the backend handles the calculation logic.
+The frontend handles user interaction and input validation, while the backend handles the calculation logic.
 
-This keeps the calculation logic independent from the UI and allows the backend API to be used by other clients if needed.
+This keeps the calculation logic independent from the UI and allows the API to be used separately from the frontend.
 
 ### Centralized Calculation Logic
 
@@ -294,30 +311,30 @@ This keeps HTTP handling separate from the calculation logic and makes the core 
 
 ### Error Handling
 
-Invalid operations and calculation errors are returned from the calculation layer and converted into JSON API responses by the HTTP handler.
+Calculation errors are returned from the calculation layer and converted into JSON API responses by the HTTP handler.
+
+The frontend also handles validation errors and backend connection errors so that failures are displayed to the user.
 
 ### Responsive UI
 
-The frontend uses responsive CSS so that the calculator remains usable on smaller screens without introducing unnecessary UI complexity.
+The calculator uses responsive CSS to remain usable on smaller screens while keeping the interface simple.
 
 ## Assumptions
 
-- Percentage is implemented as `firstNumber × secondNumber / 100`.
+- Percentage is calculated as `firstNumber × secondNumber / 100`.
 - Square root uses only the first number.
 - The second number is not required for square root.
-- The calculator uses floating-point numbers to support decimal calculations.
+- Floating-point numbers are used to support decimal calculations.
 - The backend runs on port `8080`.
 - The frontend development server runs on port `5173`.
+- The frontend currently connects to the backend using `http://localhost:8080`.
 
-## AI Tooling
+## AI Usage
 
-AI tools were used during development to help with:
+AI tools were used as a development assistant for debugging, test design, code review, and documentation.
 
-- Reviewing implementation approaches
-- Writing and improving unit tests
-- Identifying edge cases
-- Debugging test failures
-- Reviewing code structure and readability
-- Improving documentation
+The prompts used during development are documented separately in [AI_USAGE.md](AI_USAGE.md).
 
-The final implementation was reviewed and tested manually.
+```
+
+```
