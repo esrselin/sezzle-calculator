@@ -1,5 +1,3 @@
-Tabii. **Tek parça halinde, direkt `README.md` içine yapıştırabileceğin şekilde** gönderiyorum:
-
 ````md
 # Sezzle Calculator
 
